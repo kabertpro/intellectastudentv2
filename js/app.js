@@ -9,7 +9,7 @@
 // ║    Cambia: ENABLE_ADMIN_PANEL = true  →  false          ║
 // ║  Esto ocultará el acceso admin sin romper la app.       ║
 // ╚══════════════════════════════════════════════════════════╝
-const ENABLE_ADMIN_PANEL = true;
+const ENABLE_ADMIN_PANEL = false;
 
 // ── Firebase SDK (modular via CDN compat) ──────────────────
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
