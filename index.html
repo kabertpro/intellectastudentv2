@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="IntellectaQuiz — Plataforma profesional de evaluaciones online en tiempo real" />
+  <meta name="theme-color" content="#0d1b3e" />
+  <title>IntellectaQuiz ⭐</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>" />
+</head>
+<body>
+
+<!-- Background -->
+<div class="bg-mesh"></div>
+<div class="bg-grid"></div>
+
+<!-- Toast Container -->
+<div id="toast-container"></div>
+
+<!-- Loading Screen -->
+<div id="loading-screen">
+  <div class="loading-logo">⭐</div>
+  <div>
+    <div class="loading-title" style="font-family:'Sora',sans-serif">IntellectaQuiz</div>
+    <div class="loading-dots" style="justify-content:center">
+      <div class="loading-dot"></div>
+      <div class="loading-dot"></div>
+      <div class="loading-dot"></div>
+    </div>
+  </div>
+  <div class="text-dim text-sm">Iniciando plataforma...</div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     MAIN NAVBAR
+     ═══════════════════════════════════════ -->
+<nav class="navbar" id="main-navbar" style="display:none">
+  <div class="navbar-brand">
+    <div class="brand-icon">⭐</div>
+    <div class="brand-text">
+      <span>IntellectaQuiz</span>
+      <span>Kabert Studio</span>
+    </div>
+  </div>
+
+  <div class="navbar-nav">
+    <div class="nav-link" data-nav="page-student">
+      <span>🏠</span> Inicio
+    </div>
+    <div class="nav-link" data-nav="page-student" onclick="switchStudentTab && switchStudentTab('tab-history')">
+      <span>📋</span> Historial
+    </div>
+    <div class="nav-link" data-nav="page-student" onclick="switchStudentTab && switchStudentTab('tab-profile')">
+      <span>👤</span> Perfil
+    </div>
+    <!-- [ADMIN] Eliminar este elemento para ocultar acceso admin -->
+    <div class="nav-link" id="admin-nav-link" data-nav="page-admin" style="display:none">
+      <span>⚙️</span> Admin
+    </div>
+  </div>
+
+  <div class="navbar-right">
+    <div class="user-chip" id="user-chip" onclick="if(userProfile?.role==='student') { showPage('page-student'); switchStudentTab('tab-profile'); }">
+      <div class="avatar" id="user-avatar-initials">?</div>
+      <span id="user-display-name">Usuario</span>
+    </div>
+    <button class="btn btn-ghost btn-sm" id="btn-logout" title="Cerrar sesión">🚪</button>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════
+     APP WRAPPER
+     ═══════════════════════════════════════ -->
+<div id="app">
+
+  <!-- ──────────────────────────────────────
+       PAGE: AUTH
+       ────────────────────────────────────── -->
+  <div id="page-auth" class="page auth-page">
+    <div class="auth-box">
+      <div class="auth-logo">
+        <div class="logo-icon">⭐</div>
+        <h1>IntellectaQuiz</h1>
+        <p>Plataforma de evaluaciones en tiempo real</p>
+      </div>
+
+      <!-- Tabs -->
+      <div class="auth-tabs">
+        <div class="auth-tab active" data-tab="login">Ingresar</div>
+        <div class="auth-tab" data-tab="register">Registrarse</div>
+      </div>
+
+      <!-- Login Form -->
+      <div id="form-login" class="auth-form flex-col gap-4">
+        <div class="input-group">
+          <label>Email</label>
+          <input id="login-email" type="email" class="input-field" placeholder="tu@email.com" autocomplete="email" />
+        </div>
+        <div class="input-group">
+          <label>Contraseña</label>
+          <input id="login-pass" type="password" class="input-field" placeholder="••••••••" autocomplete="current-password" />
+        </div>
+        <button id="btn-login" class="btn btn-primary btn-block btn-lg mt-2">🚀 Ingresar</button>
+      </div>
+
+      <!-- Register Form -->
+      <div id="form-register" class="auth-form hidden flex-col gap-4">
+        <div class="input-group">
+          <label>Email</label>
+          <input id="reg-email" type="email" class="input-field" placeholder="tu@email.com" autocomplete="email" />
+        </div>
+        <div class="input-group">
+          <label>Contraseña</label>
+          <input id="reg-pass" type="password" class="input-field" placeholder="Mínimo 6 caracteres" autocomplete="new-password" />
+        </div>
+        <div class="input-group">
+          <label>Confirmar contraseña</label>
+          <input id="reg-pass2" type="password" class="input-field" placeholder="Repite la contraseña" autocomplete="new-password" />
+        </div>
+        <button id="btn-register" class="btn btn-primary btn-block btn-lg mt-2">✨ Crear cuenta</button>
+      </div>
+
+      <div class="divider"></div>
+      <p class="text-center text-muted text-sm">
+        Plataforma educativa segura · Datos sincronizados en la nube
+      </p>
+    </div>
+  </div>
+
+  <!-- ──────────────────────────────────────
+       PAGE: COMPLETE PROFILE
+       ────────────────────────────────────── -->
+  <div id="page-complete-profile" class="page auth-page">
+    <div class="auth-box" style="max-width:500px">
+      <div class="auth-logo">
+        <div class="logo-icon">📋</div>
+        <h1>Completa tu perfil</h1>
+        <p>Necesitamos algunos datos académicos</p>
+      </div>
+      <div class="flex-col gap-4">
+        <div class="input-group">
+          <label>Nombre completo</label>
+          <input id="profile-name" type="text" class="input-field" placeholder="Juan Pérez García" autocomplete="name" />
+        </div>
+        <div class="input-group">
+          <label>Nivel académico</label>
+          <select id="profile-nivel" class="input-field">
+            <option value="">Selecciona nivel</option>
+            <option value="Inicial">Inicial</option>
+            <option value="Primaria">Primaria</option>
+            <option value="Secundaria">Secundaria</option>
+            <option value="Universidad">Universidad</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label>Curso / Grado</label>
+          <input id="profile-curso" type="text" class="input-field" placeholder="6to A, 1ro de Secundaria..." />
+        </div>
+        <button id="btn-complete-profile" class="btn btn-primary btn-block btn-lg mt-2">✅ Guardar y continuar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──────────────────────────────────────
+       PAGE: STUDENT DASHBOARD
+       ────────────────────────────────────── -->
+  <div id="page-student" class="page flex-col">
+    <main class="main-content" style="max-width:900px;margin:0 auto;width:100%">
+
+      <!-- Welcome -->
+      <div id="student-welcome" class="mb-6"></div>
+
+      <!-- Active Exam Banner -->
+      <div id="exam-banner" class="card hidden mb-5" style="background:linear-gradient(135deg,rgba(248,113,113,.12),rgba(251,191,36,.08));border-color:rgba(248,113,113,.3)">
+        <div class="flex items-center justify-between gap-3" style="flex-wrap:wrap">
+          <div class="flex items-center gap-3">
+            <div style="font-size:2rem">🔴</div>
+            <div>
+              <div class="font-bold" id="exam-banner-title">Evaluación Activa</div>
+              <div class="text-sm text-muted">Nivel: <span id="exam-banner-nivel"></span></div>
+            </div>
+          </div>
+          <button class="btn btn-red btn-sm" onclick="loadExamForStudent()">📝 Entrar a la evaluación</button>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="auth-tabs mb-6">
+        <div class="auth-tab active student-tab-btn" data-stab="tab-dashboard" onclick="switchStudentTab('tab-dashboard')">Dashboard</div>
+        <div class="auth-tab student-tab-btn" data-stab="tab-history" onclick="switchStudentTab('tab-history')">Historial</div>
+        <div class="auth-tab student-tab-btn" data-stab="tab-profile" onclick="switchStudentTab('tab-profile')">Mi Perfil</div>
+      </div>
+
+      <!-- TAB: Dashboard -->
+      <div id="tab-dashboard" class="student-tab-content">
+        <div class="grid-2 mb-5">
+          <div class="stat-card">
+            <div class="stat-icon" style="background:rgba(108,99,255,.15)">📝</div>
+            <div class="stat-value text-violet" id="stat-total-exams">—</div>
+            <div class="stat-label">Evaluaciones</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:rgba(74,222,128,.12)">📊</div>
+            <div class="stat-value text-green" id="stat-avg-score">—</div>
+            <div class="stat-label">Promedio</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="mb-4" style="font-size:1.1rem">Evaluaciones recientes</h3>
+          <div id="student-history-list" class="flex-col gap-3">
+            <div class="text-center text-muted mt-3"><div class="spinner" style="margin:0 auto"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: History -->
+      <div id="tab-history" class="student-tab-content hidden">
+        <div class="section-header">
+          <h2>Historial académico</h2>
+          <p>Todas tus evaluaciones y resultados</p>
+        </div>
+        <div id="history-full-list" class="flex-col gap-3">
+          <div class="text-center text-muted mt-3"><div class="spinner" style="margin:0 auto"></div></div>
+        </div>
+      </div>
+
+      <!-- TAB: Profile -->
+      <div id="tab-profile" class="student-tab-content hidden">
+        <div class="profile-header mb-5">
+          <div class="profile-avatar" id="profile-avatar-initials">?</div>
+          <div class="profile-info">
+            <h2 id="profile-name-display">Cargando...</h2>
+            <p id="profile-meta-display">—</p>
+            <div class="chip-group mt-3">
+              <span class="badge badge-violet" id="profile-nivel-badge">—</span>
+              <span class="badge badge-sky" id="profile-curso-badge">—</span>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <h3 class="mb-4">Estadísticas personales</h3>
+          <div class="grid-3">
+            <div class="result-stat"><div class="value text-violet" id="prof-stat-exams">—</div><div class="label">Evaluaciones</div></div>
+            <div class="result-stat"><div class="value text-green" id="prof-stat-avg">—</div><div class="label">Promedio</div></div>
+            <div class="result-stat"><div class="value text-sky" id="prof-stat-best">—</div><div class="label">Mejor nota</div></div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+    <footer>IntellectaQuiz · <strong>Kabert Studio - LMKE</strong> · Todos los derechos reservados</footer>
+  </div>
+
+  <!-- ──────────────────────────────────────
+       PAGE: ADMIN DASHBOARD
+       ────────────────────────────────────── -->
+  <div id="page-admin" class="page flex-col">
+    <main class="main-content" style="max-width:1100px;margin:0 auto;width:100%">
+
+      <div class="section-header">
+        <h2>Panel Administrador ⚙️</h2>
+        <p>Control total de evaluaciones en tiempo real</p>
+      </div>
+
+      <!-- Admin Control Strip -->
+      <div class="card mb-5" style="background:linear-gradient(135deg,rgba(108,99,255,.12),rgba(79,195,247,.06));border-color:rgba(108,99,255,.3)">
+        <div class="flex items-center justify-between gap-3 mb-4" style="flex-wrap:wrap">
+          <div>
+            <h3 style="font-size:1.15rem">Control de Evaluación</h3>
+            <p class="text-muted text-sm mt-1">Gestiona la sesión activa en tiempo real</p>
+          </div>
+          <div class="timer-display" id="admin-global-timer">--:--</div>
+        </div>
+        <div class="flex gap-2" style="flex-wrap:wrap">
+          <button class="btn btn-green" id="btn-open-importer" onclick="switchAdminTab('tab-importer')">📥 Importar Evaluación</button>
+          <button class="btn btn-red" id="btn-stop-exam">⏹ Detener Examen</button>
+          <button class="btn btn-sky" id="btn-show-results">✅ Mostrar Resultados</button>
+          <button class="btn btn-yellow" id="btn-add-time">⏱ +5 min</button>
+          <button class="btn btn-outline" id="btn-add-late">👤 Tardío</button>
+          <button class="btn btn-ghost" id="btn-manage-students">👥 Estudiantes</button>
+          <button class="btn btn-ghost" id="btn-export-results">📊 Exportar CSV</button>
+        </div>
+      </div>
+
+      <!-- Stats Row -->
+      <div class="grid-3 mb-5">
+        <div class="stat-card">
+          <div class="stat-icon" style="background:rgba(79,195,247,.12)">👥</div>
+          <div class="stat-value text-sky" id="admin-stat-connected">0</div>
+          <div class="stat-label">Conectados</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:rgba(74,222,128,.12)">✅</div>
+          <div class="stat-value text-green" id="admin-stat-finished">0</div>
+          <div class="stat-label">Terminaron</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:rgba(251,191,36,.12)">📊</div>
+          <div class="stat-value text-yellow" id="admin-stat-avg">—</div>
+          <div class="stat-label">Promedio</div>
+        </div>
+      </div>
+
+      <!-- Admin Tabs -->
+      <div class="flex gap-2 mb-4" style="border-bottom:1px solid rgba(255,255,255,.07);padding-bottom:1px">
+        <button class="btn btn-ghost btn-sm admin-tab-btn active" data-tab="tab-monitor" onclick="switchAdminTab('tab-monitor')">📡 Monitor en vivo</button>
+        <button class="btn btn-ghost btn-sm admin-tab-btn" data-tab="tab-exams" onclick="switchAdminTab('tab-exams')">📋 Evaluaciones</button>
+        <button class="btn btn-ghost btn-sm admin-tab-btn" data-tab="tab-importer" onclick="switchAdminTab('tab-importer')">📥 Importar</button>
+      </div>
+
+      <!-- TAB: Monitor -->
+      <div id="tab-monitor" class="admin-tab-content">
+        <div class="card">
+          <h3 class="mb-4">Progreso en tiempo real</h3>
+          <div id="admin-live-board" class="scroll-list" style="max-height:500px">
+            <div class="text-center text-muted mt-5"><div class="spinner" style="margin:0 auto"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: Exams -->
+      <div id="tab-exams" class="admin-tab-content hidden">
+        <div class="card">
+          <div class="flex justify-between items-center mb-4">
+            <h3>Evaluaciones guardadas</h3>
+            <button class="btn btn-primary btn-sm" onclick="switchAdminTab('tab-importer')">+ Nueva</button>
+          </div>
+          <div id="exams-list" class="flex-col gap-3">
+            <div class="text-center text-muted mt-3"><div class="spinner" style="margin:0 auto"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: Importer -->
+      <div id="tab-importer" class="admin-tab-content hidden">
+        <div class="card">
+          <h3 class="mb-2">📥 Importador de preguntas TXT</h3>
+          <p class="text-muted text-sm mb-5">Pega o arrastra un archivo .txt con el formato oficial</p>
+
+          <!-- Format guide -->
+          <div class="card-glass p-4 mb-5" style="padding:20px">
+            <div class="badge badge-violet mb-3">Formato oficial</div>
+            <pre class="mono text-sm" style="color:rgba(255,255,255,.7);line-height:1.8;overflow-x:auto">1. ¿Cuál es la capital de Bolivia?
+A. Santa Cruz
+B. Cochabamba
+C. Sucre R
+D. La Paz
+
+2. ¿Cuántas notas musicales existen?
+A. 7 R
+B. 5
+C. 8
+D. 12</pre>
+            <div class="alert alert-info mt-3"><span>💡</span>La letra <strong>R</strong> al final de una opción indica la respuesta correcta.</div>
+          </div>
+
+          <!-- Drop Zone -->
+          <div class="import-zone mb-4" id="import-drop-zone">
+            <div class="import-icon">📂</div>
+            <div class="font-semibold mb-1">Arrastra un archivo .txt aquí</div>
+            <div class="text-muted text-sm">o haz clic para seleccionar</div>
+            <input type="file" id="import-file-input" accept=".txt" class="hidden" />
+          </div>
+
+          <!-- OR -->
+          <div class="flex items-center gap-3 mb-4">
+            <div class="divider" style="flex:1;margin:0"></div>
+            <span class="text-muted text-sm">o pega el texto</span>
+            <div class="divider" style="flex:1;margin:0"></div>
+          </div>
+
+          <div class="input-group mb-4">
+            <label>Texto de preguntas</label>
+            <textarea id="import-textarea" class="input-field" placeholder="Pega aquí tus preguntas en el formato oficial..." style="min-height:200px;font-family:monospace;font-size:.85rem"></textarea>
+          </div>
+
+          <!-- Preview -->
+          <div id="import-preview" class="hidden">
+            <div class="flex items-center justify-between mb-3">
+              <div class="badge badge-green" id="import-count">0 preguntas</div>
+            </div>
+            <div id="import-errors" class="mb-3"></div>
+            <div class="question-preview mb-5" id="import-questions-preview"></div>
+          </div>
+
+          <div class="input-group mb-4">
+            <label>Título de la evaluación</label>
+            <input id="import-exam-title" type="text" class="input-field" placeholder="Ej: Evaluación de Matemáticas — 1er Trimestre" />
+          </div>
+
+          <button id="btn-save-exam" class="btn btn-primary btn-block" disabled data-questions="">
+            💾 Guardar evaluación
+          </button>
+        </div>
+      </div>
+
+    </main>
+    <footer>IntellectaQuiz · <strong>Kabert Studio - LMKE</strong> · Panel Administrador</footer>
+  </div>
+
+</div><!-- /app -->
+
+<!-- ═══════════════════════════════════════
+     EXAM MODE OVERLAY (fullscreen)
+     ═══════════════════════════════════════ -->
+<div id="exam-mode-overlay">
+  <div class="exam-topbar">
+    <div class="navbar-brand">
+      <div class="brand-icon" style="width:32px;height:32px;font-size:1rem">⭐</div>
+      <span style="font-family:'Sora',sans-serif;font-weight:800;font-size:1rem">IntellectaQuiz</span>
+    </div>
+    <div class="exam-live-badge">
+      <div class="exam-live-dot"></div>
+      EXAMEN EN CURSO
+    </div>
+    <div class="flex items-center gap-3">
+      <div class="text-dim text-sm" id="exam-answered-count">0/0</div>
+      <div class="timer-display" id="exam-timer" style="font-size:1.6rem">--:--</div>
+    </div>
+  </div>
+
+  <div class="exam-content" id="exam-content">
+    <div class="question-counter" id="exam-question-counter">Pregunta 1 de 1</div>
+
+    <!-- Progress -->
+    <div class="progress-bar-wrap mb-6" style="width:100%;max-width:760px">
+      <div class="progress-bar-fill" id="exam-progress-fill" style="width:0%"></div>
+    </div>
+
+    <!-- Question -->
+    <div class="question-card w-full">
+      <div class="question-text" id="exam-question-text">Cargando pregunta...</div>
+      <div class="answer-grid" id="exam-answers-grid"></div>
+
+      <div class="flex justify-between items-center mt-6">
+        <button class="btn btn-ghost" id="btn-prev-q">← Anterior</button>
+        <button class="btn btn-primary" id="btn-next-q">Siguiente →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     MODALS
+     ═══════════════════════════════════════ -->
+
+<!-- Start Exam Modal -->
+<div class="modal-overlay" id="start-exam-modal">
+  <div class="modal">
+    <div class="flex justify-between items-center mb-5">
+      <h3 class="modal-title" style="margin:0">▶ Iniciar evaluación</h3>
+      <span class="modal-close" data-close-modal>✕</span>
+    </div>
+    <div class="card-glass p-4 mb-5" style="padding:16px">
+      <div class="font-bold" id="start-exam-title-display">—</div>
+      <div class="text-muted text-sm mt-1" id="start-exam-count">0 preguntas</div>
+    </div>
+    <div class="flex-col gap-4">
+      <div class="input-group">
+        <label>Nivel objetivo</label>
+        <select id="start-exam-nivel" class="input-field">
+          <option value="all">Todos los niveles</option>
+          <option value="Inicial">Inicial</option>
+          <option value="Primaria">Primaria</option>
+          <option value="Secundaria">Secundaria</option>
+          <option value="Universidad">Universidad</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label>Tiempo (minutos)</label>
+        <input id="start-exam-mins" type="number" class="input-field" value="30" min="5" max="180" />
+      </div>
+      <input type="hidden" id="start-exam-id" />
+      <div class="alert alert-warning"><span>⚠️</span> Esto limpiará las sesiones anteriores.</div>
+      <button id="btn-confirm-start-exam" class="btn btn-primary btn-block btn-lg">🚀 Iniciar ahora</button>
+    </div>
+  </div>
+</div>
+
+<!-- Result Modal -->
+<div class="modal-overlay" id="result-modal">
+  <div class="modal">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="modal-title" style="margin:0">Resultado</h3>
+      <span class="modal-close" data-close-modal>✕</span>
+    </div>
+    <div id="result-modal-content"></div>
+  </div>
+</div>
+
+<!-- Preview Modal -->
+<div class="modal-overlay" id="preview-modal">
+  <div class="modal" style="max-width:600px">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="modal-title" style="margin:0">Vista previa</h3>
+      <span class="modal-close" data-close-modal>✕</span>
+    </div>
+    <div id="preview-modal-content"></div>
+  </div>
+</div>
+
+<!-- Late Student Modal -->
+<div class="modal-overlay" id="late-student-modal">
+  <div class="modal">
+    <div class="flex justify-between items-center mb-5">
+      <h3 class="modal-title" style="margin:0">👤 Habilitar estudiante tardío</h3>
+      <span class="modal-close" data-close-modal>✕</span>
+    </div>
+    <div class="flex-col gap-4">
+      <div class="input-group">
+        <label>Email del estudiante</label>
+        <input id="late-email" type="email" class="input-field" placeholder="estudiante@email.com" />
+      </div>
+      <div class="alert alert-info"><span>ℹ️</span> El estudiante podrá unirse sin reiniciar la sesión.</div>
+      <button id="btn-confirm-add-late" class="btn btn-green btn-block">✅ Habilitar ingreso</button>
+    </div>
+  </div>
+</div>
+
+<!-- Manage Students Modal -->
+<div class="modal-overlay" id="manage-students-modal">
+  <div class="modal" style="max-width:600px">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="modal-title" style="margin:0">👥 Gestión de estudiantes</h3>
+      <span class="modal-close" data-close-modal>✕</span>
+    </div>
+    <div id="manage-students-list" class="scroll-list flex-col gap-3"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     BOTTOM NAV (Mobile)
+     ═══════════════════════════════════════ -->
+<nav class="bottom-nav" id="bottom-nav">
+  <div class="bottom-nav-item active" data-nav="page-student" onclick="switchStudentTab('tab-dashboard')">
+    <span class="icon">🏠</span>
+    <span>Inicio</span>
+  </div>
+  <div class="bottom-nav-item" data-nav="page-student" onclick="switchStudentTab('tab-history')">
+    <span class="icon">📋</span>
+    <span>Historial</span>
+  </div>
+  <div class="bottom-nav-item" data-nav="page-student" onclick="switchStudentTab('tab-profile')">
+    <span class="icon">👤</span>
+    <span>Perfil</span>
+  </div>
+  <!-- [ADMIN] Eliminar este elemento para ocultar acceso admin en móvil -->
+  <div class="bottom-nav-item" data-nav="page-admin" id="admin-bottom-nav">
+    <span class="icon">⚙️</span>
+    <span>Admin</span>
+  </div>
+</nav>
+
+<!-- Student Tab Profile Script Enhancement -->
+<script type="module">
+  // Enhance profile tab with data
+  const origRender = window.renderStudentDashboard;
+  window._profileTabLoaded = false;
+
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('[data-stab="tab-profile"]')) {
+      setTimeout(() => window.loadProfileTab?.(), 100);
+    }
+    if (e.target.closest('[data-stab="tab-history"]')) {
+      setTimeout(() => window.loadHistoryTab?.(), 100);
+    }
+  });
+</script>
+
+<!-- Main Module -->
+<script type="module" src="js/app.js"></script>
+
+<!-- Profile & History enhancement (inline for simplicity) -->
+<script type="module">
+  import { getFirestore, collection, query, where, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+  // These are called after app.js sets up currentUser / userProfile
+  window.loadProfileTab = async function() {
+    if (!window.userProfile || !window.currentUser) return;
+    const p = window.userProfile;
+    const initials = (p.name || '?').split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
+    document.getElementById('profile-avatar-initials').textContent = initials;
+    document.getElementById('profile-name-display').textContent = p.name || '-';
+    document.getElementById('profile-meta-display').textContent = p.email || '';
+    document.getElementById('profile-nivel-badge').textContent = p.nivel || '-';
+    document.getElementById('profile-curso-badge').textContent = p.curso || '-';
+
+    // Load stats
+    const db = getFirestore();
+    const snap = await getDocs(query(collection(db,'results'), where('uid','==',window.currentUser.uid)));
+    const results = snap.docs.map(d=>d.data());
+    const total = results.length;
+    const avg = total > 0 ? Math.round(results.reduce((a,r)=>a+(r.percentage||0),0)/total) : 0;
+    const best = total > 0 ? Math.max(...results.map(r=>r.percentage||0)) : 0;
+    document.getElementById('prof-stat-exams').textContent = total;
+    document.getElementById('prof-stat-avg').textContent = avg + '%';
+    document.getElementById('prof-stat-best').textContent = best + '%';
+  };
+
+  window.loadHistoryTab = async function() {
+    if (!window.currentUser) return;
+    const db = getFirestore();
+    const container = document.getElementById('history-full-list');
+    container.innerHTML = '<div class="text-center"><div class="spinner" style="margin:0 auto"></div></div>';
+    const snap = await getDocs(query(collection(db,'results'), where('uid','==',window.currentUser.uid), orderBy('completedAt','desc')));
+    if (snap.empty) {
+      container.innerHTML = '<div class="text-center text-muted mt-5"><div style="font-size:3rem">📋</div><p class="mt-3">Sin evaluaciones aún</p></div>';
+      return;
+    }
+    container.innerHTML = snap.docs.map(d => {
+      const r = d.data();
+      const pct = r.percentage || Math.round((r.correct/r.total)*100);
+      const date = r.completedAt?.toDate ? r.completedAt.toDate().toLocaleDateString('es-BO') : '-';
+      return `
+        <div class="student-row">
+          <div class="stat-icon" style="background:rgba(108,99,255,.15)">📝</div>
+          <div class="student-info">
+            <div class="student-name">${r.examTitle||'Evaluación'}</div>
+            <div class="student-meta">${date} · ${r.nivel||''} · ${r.curso||''}</div>
+          </div>
+          <div class="flex gap-2 items-center">
+            <span class="badge ${pct>=70?'badge-green':pct>=50?'badge-yellow':'badge-red'}">${pct}%</span>
+            <span class="text-sm text-dim">${r.correct}/${r.total}</span>
+            ${r.resultsVisible ? `<button class="btn btn-sm btn-outline" onclick="showStudentResult('${d.id}')">📄 Ver</button>` : '<span class="badge badge-violet">Bloqueado</span>'}
+          </div>
+        </div>
+      `;
+    }).join('');
+  };
+</script>
+
+</body>
+</html>
